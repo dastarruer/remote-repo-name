@@ -5,14 +5,17 @@ from os import remove
 
 SATELLITE_IMG="images/satellite-image-high.png"
 TEXTURE_PATH="texture.png"
-FINAL_RENDER_PATH="images/output/render.png"
+FINAL_MODEL_PATH="model.obj"
 
 def main():
     img = process_image()
     plotter = create_model(img)
 
-    # Save as a screenshot once closed
-    plotter.show(screenshot=FINAL_RENDER_PATH)
+    # Show the model
+    plotter.show()
+    
+    # Save the model
+    plotter.save("terrain.obj")
 
 
 def process_image() -> Image:
@@ -43,6 +46,8 @@ def create_model(img):
     # Create the texture
     img.transpose(Image.ROTATE_90).save(TEXTURE_PATH)
     texture= pv.read_texture(TEXTURE_PATH)
+    
+    grid.extract_surface().save(FINAL_MODEL_PATH)
 
     # Delete the texture
     remove(TEXTURE_PATH)
