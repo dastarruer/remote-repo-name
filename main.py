@@ -26,4 +26,4 @@ grid = pv.StructuredGrid(xv, yv, heightmap)
 # Visualize
 plotter = pv.Plotter()
 plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", render_points_as_spheres="True")
-plotter.show()
+plotter.show(screenshot="images/output/render.png")
