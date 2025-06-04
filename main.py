@@ -2,8 +2,8 @@ from PIL import Image
 import numpy as np
 import pyvista as pv
 
-# Load your satellite PNG image
-img = Image.open("satellite-image.png").convert('L')  # Convert to grayscale
+# Convert to grayscale and save as .tiff
+img = Image.open("images/satellite-image-high.png").convert('L')
 
 # Resize to manageable size (optional)
 img = img.resize((300, 300))
@@ -22,8 +22,10 @@ xv, yv = np.meshgrid(x, y)
 
 # Create 3D terrain mesh using pyvista
 grid = pv.StructuredGrid(xv, yv, heightmap)
+grid.texture_map_to_plane(inplace=True)
 
 # Visualize
 plotter = pv.Plotter()
-plotter.add_mesh(grid, cmap="terrain")
+texture = pv.read_texture("images/satellite-image-high.png")
+plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", texture=texture, render_points_as_spheres="True")
 plotter.show()
