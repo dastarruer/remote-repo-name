@@ -41,10 +41,8 @@ def create_model(img):
     # Delete the texture
     remove("texture.png")
 
-    # Delete the 
-    # Visualize
     plotter = pv.Plotter()
-    plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", render_points_as_spheres="True", texture=texture)
+    plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", render_points_as_spheres="True", texture=texture, render_lines_as_tubes="True")
     return plotter
     
 
