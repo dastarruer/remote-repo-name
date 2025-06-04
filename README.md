@@ -1,3 +1,3 @@
 ## TODO:
-- Export to glb file
-- Embed in gsites
+- Export to glb file ✅
+- Embed in gsites ✅

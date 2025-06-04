@@ -3,30 +3,26 @@ import numpy as np
 import pyvista as pv
 from os import remove
 
-SATELLITE_IMG="images/satellite-image-high.png"
+SATELLITE_IMG="images/satellite-image-medium.png"
 TEXTURE_PATH="texture.png"
-FINAL_MODEL_PATH="model.obj"
+FINAL_MODEL_PATH="model/model.obj"
 
 def main():
     img = process_image()
     plotter = create_model(img)
 
     # Show the model
-    plotter.show()
-    
-    # Save the model
-    plotter.save("terrain.obj")
+    plotter.export_obj(FINAL_MODEL_PATH)
 
 
-def process_image() -> Image:
+def process_image() -> Image.Image:
     # Convert to grayscale and save as .tiff
     img = Image.open(SATELLITE_IMG).convert('L')
 
-    # Rotate the image so that it will show properly when put on the mesh
     return img
 
 
-def create_model(img):
+def create_model(img) -> pv.Plotter:
     # Convert to numpy array (0-255)
     heightmap = np.array(img)
 
@@ -43,12 +39,12 @@ def create_model(img):
     grid = pv.StructuredGrid(xv, yv, heightmap)
     grid.texture_map_to_plane(inplace=True)
 
+    # Rotate the image so that it will show properly when put on the mesh
+    img.transpose(Image.Transpose.ROTATE_90).save(TEXTURE_PATH)
+    
     # Create the texture
-    img.transpose(Image.ROTATE_90).save(TEXTURE_PATH)
     texture= pv.read_texture(TEXTURE_PATH)
     
-    grid.extract_surface().save(FINAL_MODEL_PATH)
-
     # Delete the texture
     remove(TEXTURE_PATH)
 
