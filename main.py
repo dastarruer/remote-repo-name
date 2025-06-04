@@ -6,7 +6,7 @@ import pyvista as pv
 img = Image.open("images/satellite-image-high.png").convert('L')
 
 # Resize to manageable size (optional)
-img = img.resize((300, 300))
+# img = img.resize((300, 300))
 
 # Convert to numpy array (0-255)
 heightmap = np.array(img)
