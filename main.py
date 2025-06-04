@@ -22,10 +22,8 @@ xv, yv = np.meshgrid(x, y)
 
 # Create 3D terrain mesh using pyvista
 grid = pv.StructuredGrid(xv, yv, heightmap)
-grid.texture_map_to_plane(inplace=True)
 
 # Visualize
 plotter = pv.Plotter()
-texture = pv.read_texture("images/satellite-image-high.png")
-plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", texture=texture, render_points_as_spheres="True")
+plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", render_points_as_spheres="True")
 plotter.show()
