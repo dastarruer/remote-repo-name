@@ -2,19 +2,30 @@ from PIL import Image, ImageFilter
 import numpy as np
 import pyvista as pv
 from os import remove, path
+import getopt, sys
 
 
 BASE_DIR = path.dirname(__file__)
-SATELLITE_IMG=path.join(BASE_DIR, "images", "satellite-image.png")
-TEXTURE_PATH=path.join(BASE_DIR, "texture.png")
-FINAL_MODEL_PATH=path.join(BASE_DIR, "model", "model.obj")
+SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.png")
+TEXTURE_PATH = path.join(BASE_DIR, "texture.png")
+FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
+
+FLAGS = ["show"]
+OPTIONS = "s"
 
 def main():
+    argument_list = sys.argv[1:]
+    arguments, values = getopt.getopt(argument_list, OPTIONS, FLAGS)
+    
     img = process_image()
     plotter = create_model(img)
 
     # Export the model
     plotter.export_obj(FINAL_MODEL_PATH)
+    
+    for currentArgument, currentValue in arguments:
+        if currentArgument in ("-s", "--show"):
+            plotter.show()
 
 
 def process_image() -> Image.Image:
@@ -56,7 +67,7 @@ def create_model(img) -> pv.Plotter:
     remove(TEXTURE_PATH)
 
     plotter = pv.Plotter()
-    plotter.add_mesh(grid, cmap="terrain", lighting="True", label="The Gaza strip", render_points_as_spheres="True", texture=texture, render_lines_as_tubes="True")
+    plotter.add_mesh(grid, cmap="terrain", lighting=True, label="The Gaza strip", render_points_as_spheres=True, texture=texture, render_lines_as_tubes=True)
     return plotter
     
 
