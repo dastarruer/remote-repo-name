@@ -5,6 +5,7 @@ python3 -m venv .venv
 source .venv/bin/activate.fish
 
 # Install dependencies
-pip install numpy pillow pyvista
+apt install gdal-bin libgdal-dev
+pip install numpy pillow pyvista GDAL elevation
 
 mkdir images

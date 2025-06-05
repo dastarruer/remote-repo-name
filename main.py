@@ -6,7 +6,7 @@ import getopt, sys
 
 
 BASE_DIR = path.dirname(__file__)
-SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.png")
+SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.tiff")
 TEXTURE_PATH = path.join(BASE_DIR, "texture.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
@@ -14,7 +14,6 @@ FLAGS = ["show"]
 OPTIONS = "s"
 
 def main():
-    
     img = process_image()
     plotter = create_model(img)
 
@@ -27,6 +26,11 @@ def main():
 def process_image() -> Image.Image:
     # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
     img = Image.open(SATELLITE_IMG).convert('L')
+    
+    # Downscale the image so the program doesn't crash all the time
+    scale_factor = 0.5
+    width, height = int(img.width * scale_factor), int(img.height * scale_factor)
+    img = img.resize((width, height), Image.Resampling.LANCZOS)
 
     # Blur image in order to smooth out spikes from adjacent pixels with drastically different values
     blur_strength = 35
