@@ -6,7 +6,7 @@ import getopt, sys
 
 
 BASE_DIR = path.dirname(__file__)
-SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.tiff")
+SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.png")
 TEXTURE_PATH = path.join(BASE_DIR, "texture.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
@@ -28,12 +28,14 @@ def process_image() -> Image.Image:
     img = Image.open(SATELLITE_IMG).convert('L')
     
     # Downscale the image so the program doesn't crash all the time
-    scale_factor = 0.5
+    scale_factor = 1
     width, height = int(img.width * scale_factor), int(img.height * scale_factor)
     img = img.resize((width, height), Image.Resampling.LANCZOS)
 
+    img = img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+
     # Blur image in order to smooth out spikes from adjacent pixels with drastically different values
-    blur_strength = 35
+    blur_strength = 5
     img.filter(ImageFilter.GaussianBlur(radius=blur_strength))
 
     return img
