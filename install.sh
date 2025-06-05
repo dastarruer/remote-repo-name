@@ -6,6 +6,6 @@ source .venv/bin/activate.fish
 
 # Install dependencies
 apt install gdal-bin libgdal-dev
-pip install numpy pillow pyvista GDAL elevation
+pip install numpy pillow pyvista GDAL elevation geopandas
 
 mkdir images

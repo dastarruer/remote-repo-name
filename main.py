@@ -4,6 +4,7 @@ import pyvista as pv
 from os import remove, path
 import getopt, sys
 import elevation
+import geopandas as gpd
 
 
 # DEM stands for Distance Elevantion Model
@@ -13,11 +14,19 @@ BASE_DIR = path.dirname(__file__)
 TEXTURE_PATH = path.join(BASE_DIR, "texture.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
-FLAGS = ["show"]
-OPTIONS = "s"
+FLAGS = ["show", "coordinates="]
+OPTIONS = "sc:"
 
 def main():
-    elevation.clip(bounds=(34.20, 31.22, 34.55, 31.60))
+    argument_list = sys.argv[1:]
+    arguments, values = getopt.getopt(argument_list, OPTIONS, FLAGS)
+    bounds = ()
+    
+    for currentArgument, currentValue in arguments:
+        if currentArgument in ("-c", "--coordinates"):
+            bounds = tuple(map(float, currentValue.split(",")))
+
+    elevation.clip(bounds=bounds)
     elevation.clean()
 
     img = process_image()
@@ -26,13 +35,15 @@ def main():
     # Export the model
     plotter.export_obj(FINAL_MODEL_PATH)
     
-    process_cli_args(plotter)
+    for currentArgument, currentValue in arguments:
+        if currentArgument in ("-s", "--show"):
+            plotter.show()
 
 
 def process_image() -> Image.Image:
     # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
     img = Image.open(DEM).convert('L')
-    
+
     # Downscale the image so the program doesn't crash all the time
     scale_factor = 0.5
     width, height = int(img.width * scale_factor), int(img.height * scale_factor)
@@ -76,14 +87,6 @@ def create_model(img) -> pv.Plotter:
     plotter.add_mesh(grid, cmap="terrain", lighting=True, label="The Gaza strip", render_points_as_spheres=True, texture=texture, render_lines_as_tubes=True)
     return plotter
     
-    
-def process_cli_args(plotter):
-    argument_list = sys.argv[1:]
-    arguments, values = getopt.getopt(argument_list, OPTIONS, FLAGS)
-
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-s", "--show"):
-            plotter.show()
         
 
 if __name__ == "__main__":
