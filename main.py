@@ -1,11 +1,13 @@
 from PIL import Image, ImageFilter
 import numpy as np
 import pyvista as pv
-from os import remove
+from os import remove, path
 
-SATELLITE_IMG="images/satellite-image.png"
-TEXTURE_PATH="texture.png"
-FINAL_MODEL_PATH="model/model.obj"
+
+BASE_DIR = path.dirname(__file__)
+SATELLITE_IMG=path.join(BASE_DIR, "images", "satellite-image.png")
+TEXTURE_PATH=path.join(BASE_DIR, "texture.png")
+FINAL_MODEL_PATH=path.join(BASE_DIR, "model", "model.obj")
 
 def main():
     img = process_image()
