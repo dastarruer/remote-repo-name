@@ -1,9 +1,9 @@
-from PIL import Image
+from PIL import Image, ImageFilter
 import numpy as np
 import pyvista as pv
 from os import remove
 
-SATELLITE_IMG="images/satellite-image-medium.png"
+SATELLITE_IMG="images/satellite-image.png"
 TEXTURE_PATH="texture.png"
 FINAL_MODEL_PATH="model/model.obj"
 
@@ -11,13 +11,17 @@ def main():
     img = process_image()
     plotter = create_model(img)
 
-    # Show the model
+    # Export the model
     plotter.export_obj(FINAL_MODEL_PATH)
 
 
 def process_image() -> Image.Image:
-    # Convert to grayscale and save as .tiff
+    # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
     img = Image.open(SATELLITE_IMG).convert('L')
+
+    # Blur image in order to smooth out spikes from adjacent pixels with drastically different values
+    blur_strength = 35
+    img.filter(ImageFilter.GaussianBlur(radius=blur_strength))
 
     return img
 
@@ -39,13 +43,13 @@ def create_model(img) -> pv.Plotter:
     grid = pv.StructuredGrid(xv, yv, heightmap)
     grid.texture_map_to_plane(inplace=True)
 
-    # Rotate the image so that it will show properly when put on the mesh
+    # Rotate the image so that it will show properly when put on the mesh, and save the texture file
     img.transpose(Image.Transpose.ROTATE_90).save(TEXTURE_PATH)
-    
+
     # Create the texture
     texture= pv.read_texture(TEXTURE_PATH)
     
-    # Delete the texture
+    # Delete the texture file
     remove(TEXTURE_PATH)
 
     plotter = pv.Plotter()
