@@ -3,10 +3,13 @@ import numpy as np
 import pyvista as pv
 from os import remove, path
 import getopt, sys
+import elevation
 
+
+# DEM stands for Distance Elevantion Model
+DEM = path.expanduser("~/.cache/elevation/SRTM1/out.tif")
 
 BASE_DIR = path.dirname(__file__)
-SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.tiff")
 TEXTURE_PATH = path.join(BASE_DIR, "texture.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
@@ -14,6 +17,9 @@ FLAGS = ["show"]
 OPTIONS = "s"
 
 def main():
+    elevation.clip(bounds=(34.20, 31.22, 34.55, 31.60))
+    elevation.clean()
+
     img = process_image()
     plotter = create_model(img)
 
@@ -25,7 +31,7 @@ def main():
 
 def process_image() -> Image.Image:
     # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
-    img = Image.open(SATELLITE_IMG).convert('L')
+    img = Image.open(DEM).convert('L')
     
     # Downscale the image so the program doesn't crash all the time
     scale_factor = 0.5
