@@ -1,4 +1,4 @@
-from PIL import Image, ImageFilter
+from PIL import Image, ImageFilter, ImageOps
 import numpy as np
 import pyvista as pv
 from os import remove, path
@@ -26,7 +26,7 @@ def main():
         if currentArgument in ("-c", "--coordinates"):
             bounds = tuple(map(float, currentValue.split(",")))
 
-    elevation.clip(bounds=bounds)
+    elevation.clip(bounds=bounds, product="SRTM3")
     elevation.clean()
 
     img = process_image()
