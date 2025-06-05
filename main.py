@@ -31,7 +31,8 @@ def create_model(img) -> pv.Plotter:
     heightmap = np.array(img)
 
     # Normalize heightmap to a smaller scale, e.g. 0 to 50 meters
-    heightmap = (heightmap / 255.0) * 50
+    max_height = 50
+    heightmap = (heightmap / 255.0) * max_height
 
     # Create grid coordinates
     nrows, ncols = heightmap.shape
