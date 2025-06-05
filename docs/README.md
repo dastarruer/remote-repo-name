@@ -5,32 +5,13 @@ This was made for my Social Studies project because I needed a 3D model of the G
 ## How to use
 
 ### Download satellite imagery  
+Go onto this website: <https://en-gb.topographic-map.com/>  
 
-To use the program, you first need a satellite image.  
+Here you can find topographic data for every place in the world. It's great because you can also have the country names in the screenshot, which is great if you want a 3D map to impress your teacher or something.  
 
-You can find high quality images here:
+You can choose any layer, but I used Carto Light. Then, screenshot the area you want, and save it as `images/satellite-image.png` (because I'm lazy and just hardcoded the name). 
 
-<https://browser.dataspace.copernicus.eu/>  
-
-Although keep in mind that you will need an account in order to download higher-res images.
-
-You can use this to draw the area you want to download:
-
-![alt text](image.png)  
-
-On the left is a menu, in which (I think) it is best to turn cloud coverage down to 0. You can also choose a layer -- I just chose the default 'true color' layer.  
-
-Then press this button to download the image:  
-
-![alt text](image-1.png)  
-
-Then, click this (you will need to create an account for this part):  
-
-![alt text](image-2.png)
-
-Save the image as a PNG for maximum quality.  
-
-If you want a high quality model, and don't care about size, download the highest resolution option. If you care about size though, I have found medium quality to be the best; it keeps the .obj file under 100 megabytes for small areas, while also looking pretty decent.
+Maybe in the future I will use the API instead for ease of use, but for now, this is the workaround. 
 
 ### Create the .obj file
 Run the install script:
@@ -46,9 +27,6 @@ Then run `main.py`:
 ```
 python3 main.py
 ```  
-You will find the exported `.obj` file in `model/`.
+You will find the exported `.obj` file in `model/`.  
 
-
-## TODO:
-- Export to glb file ✅
-- Embed in gsites ✅
+If you want to impress your teacher on a presentation, upload the model to SketchFab (after zipping `model/`). You can then embed it in Google Sites or something.
