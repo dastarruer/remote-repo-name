@@ -50,7 +50,7 @@ def process_image() -> Image.Image:
     img = img.resize((width, height), Image.Resampling.LANCZOS)
 
     # Blur image in order to smooth out spikes from adjacent pixels with drastically different values
-    blur_strength = 35
+    blur_strength = 5
     img.filter(ImageFilter.GaussianBlur(radius=blur_strength))
 
     return img
