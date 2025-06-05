@@ -1,5 +1,7 @@
 # Project Overview
 A program that exports a satellite image to a 3D model (although technically it does not have to be a satellite image).  
+
+This was made for my Social Studies project because I needed a 3D model of the Gaza strip, but I might need it later so here are some instructions for future me.
 ## How to use
 
 ### Download satellite imagery  
