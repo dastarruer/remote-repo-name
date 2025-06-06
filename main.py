@@ -8,7 +8,7 @@ import sys
 
 BASE_DIR = path.dirname(__file__)
 MODIFIED_TOPOGRAPHY_IMG = path.join(BASE_DIR, "modified-image.png")
-DEFAULT_IMG = path.join(BASE_DIR, "images", "topography-image.png")
+DEFAULT_IMG = path.join(BASE_DIR, "images", "example-image.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
 FLAGS = ["show", "image="]
