@@ -6,8 +6,8 @@ import getopt, sys
 
 
 BASE_DIR = path.dirname(__file__)
-SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.png")
-MODIFIED_SATELLITE_IMG = path.join(BASE_DIR, "images", "modified-image.png")
+TOPOGRAPHY_IMG = path.join(BASE_DIR, "images", "topography-image.png")
+MODIFIED_TOPOGRAPHY_IMG = path.join(BASE_DIR, "images", "modified-image.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
 FLAGS = ["show"]
@@ -29,13 +29,12 @@ def main():
     plotter.export_obj(FINAL_MODEL_PATH)
     
 
-
 def process_image() -> Image.Image:
     # Reset modified image
-    Image.open(SATELLITE_IMG).save(MODIFIED_SATELLITE_IMG)
+    Image.open(TOPOGRAPHY_IMG).save(MODIFIED_TOPOGRAPHY_IMG)
 
     # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
-    img = Image.open(SATELLITE_IMG).convert('L')
+    img = Image.open(TOPOGRAPHY_IMG).convert('L')
     
     # Downscale the image so the program doesn't crash all the time
     scale_factor = 1
@@ -68,10 +67,10 @@ def create_model(img, show=False) -> pv.Plotter:
     grid.texture_map_to_plane(inplace=True)
 
     # For whatever reason the image will not align with the mesh, meaning that we have to rotate it
-    Image.open(MODIFIED_SATELLITE_IMG).transpose(Image.Transpose.ROTATE_90).save(MODIFIED_SATELLITE_IMG)
+    Image.open(TOPOGRAPHY_IMG).transpose(Image.Transpose.ROTATE_90).save(MODIFIED_TOPOGRAPHY_IMG)
     
     # Create the texture
-    texture= pv.read_texture(MODIFIED_SATELLITE_IMG)
+    texture= pv.read_texture(MODIFIED_TOPOGRAPHY_IMG)
 
     plotter = pv.Plotter()
     plotter.add_mesh(grid, cmap="terrain", lighting=True, label="The Gaza strip", render_points_as_spheres=True, texture=texture, render_lines_as_tubes=True)
