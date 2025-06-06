@@ -5,14 +5,28 @@ import pyvista as pv
 import getopt
 import sys
 
+HELP = """\
+Usage: python script.py [OPTIONS]
+
+A command-line program to convert topography images to 3D .obj models.
+
+Options:
+  -i, --image <path>       Path to the topographic image (default: images/example-image.png)
+      --scale <float>      Scale factor to resize the image (default: 1.0)
+  -s, --show               Display the generated model in an interactive viewer
+  -h, --help               Show this help message and exit
+
+Example:
+  python script.py --image mymap.png --scale 0.5 --show
+"""
 
 BASE_DIR = path.dirname(__file__)
 MODIFIED_TOPOGRAPHY_IMG = path.join(BASE_DIR, "modified-image.png")
 DEFAULT_IMG = path.join(BASE_DIR, "images", "example-image.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
-FLAGS = ["show", "image=", "scale="]
-OPTIONS = "si:"
+FLAGS = ["show", "image=", "scale=", "help"]
+OPTIONS = "shi:"
 
 def main():
     argument_list = sys.argv[1:]
@@ -29,6 +43,9 @@ def main():
             topography_img = path.abspath(current_value)
         if current_argument in ("--scale"):
             scale_factor = float(current_value)
+        if current_argument in ("-h", "--help"):
+            print(HELP)
+            return
 
     img = process_image(topography_img, scale_factor=scale_factor)
     create_model(img, show=show, topography_img=topography_img)
@@ -87,7 +104,6 @@ def create_model(img, show=False, topography_img=DEFAULT_IMG) -> None:
     if show == True:
         plotter.show()
 
-        
 
 if __name__ == "__main__":
     main()
