@@ -6,5 +6,3 @@ source .venv/bin/activate.fish
 
 # Install dependencies
 pip install numpy pillow pyvista
-
-mkdir images

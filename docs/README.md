@@ -5,7 +5,9 @@ This was made for my Social Studies project because I needed a 3D model of the G
 ## How to use
 
 ### Download satellite imagery  
-Go onto this website: <https://en-gb.topographic-map.com/>  
+Although there will be an example image in `images/`, you probably want to get your own imagery instead.  
+
+To do so, go to this website: <https://en-gb.topographic-map.com/>  
 
 Here you can find topographic data for every place in the world. It's great because you can also have the country names in the screenshot, which is great if you want a 3D map to impress your teacher or something.  
 
