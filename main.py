@@ -7,7 +7,7 @@ import getopt, sys
 
 BASE_DIR = path.dirname(__file__)
 SATELLITE_IMG = path.join(BASE_DIR, "images", "satellite-image.png")
-TEXTURE_PATH = path.join(BASE_DIR, "texture.png")
+MODIFIED_SATELLITE_IMG = path.join(BASE_DIR, "images", "modified-image.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
 FLAGS = ["show"]
@@ -24,6 +24,9 @@ def main():
 
 
 def process_image() -> Image.Image:
+    # Reset modified image
+    Image.open(SATELLITE_IMG).save(MODIFIED_SATELLITE_IMG)
+
     # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
     img = Image.open(SATELLITE_IMG).convert('L')
     
@@ -31,8 +34,6 @@ def process_image() -> Image.Image:
     scale_factor = 1
     width, height = int(img.width * scale_factor), int(img.height * scale_factor)
     img = img.resize((width, height), Image.Resampling.LANCZOS)
-
-    img = img.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
 
     # Blur image in order to smooth out spikes from adjacent pixels with drastically different values
     blur_strength = 5
@@ -59,14 +60,11 @@ def create_model(img) -> pv.Plotter:
     grid = pv.StructuredGrid(xv, yv, heightmap)
     grid.texture_map_to_plane(inplace=True)
 
-    # Rotate the image so that it will show properly when put on the mesh, and save the texture file
-    img.transpose(Image.Transpose.ROTATE_90).save(TEXTURE_PATH)
-
-    # Create the texture
-    texture= pv.read_texture(TEXTURE_PATH)
+    # For whatever reason the image will not align with the mesh, meaning that we have to rotate it
+    Image.open(MODIFIED_SATELLITE_IMG).transpose(Image.Transpose.ROTATE_90).save(MODIFIED_SATELLITE_IMG)
     
-    # Delete the texture file
-    remove(TEXTURE_PATH)
+    # Create the texture
+    texture= pv.read_texture(MODIFIED_SATELLITE_IMG)
 
     plotter = pv.Plotter()
     plotter.add_mesh(grid, cmap="terrain", lighting=True, label="The Gaza strip", render_points_as_spheres=True, texture=texture, render_lines_as_tubes=True)
