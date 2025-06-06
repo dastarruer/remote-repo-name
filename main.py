@@ -1,57 +1,57 @@
 from PIL import Image, ImageFilter
 import numpy as np
+from os import path
 import pyvista as pv
-from os import remove, path
-import getopt, sys
+import getopt
+import sys
 
 
 BASE_DIR = path.dirname(__file__)
-topography_img = path.join(BASE_DIR, "images", "topography-image.png")
 MODIFIED_TOPOGRAPHY_IMG = path.join(BASE_DIR, "modified-image.png")
+DEFAULT_IMG = path.join(BASE_DIR, "images", "topography-image.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
 FLAGS = ["show", "image="]
 OPTIONS = "si:"
 
 def main():
-    global topography_img
-    
     argument_list = sys.argv[1:]
     arguments, _ = getopt.getopt(argument_list, OPTIONS, FLAGS)
 
+    # Default path
+    topography_img = DEFAULT_IMG
     show = False
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-s", "--show"):
+    for current_argument, current_value in arguments:
+        if current_argument in ("-s", "--show"):
             show = True
-        if currentArgument in ("-i", "--image") and path.exists(currentValue):
-            topography_img = path.abspath(currentValue)
-            
-    img = process_image()
-    create_model(img, show=show)
+        if current_argument in ("-i", "--image") and path.exists(current_value):
+            topography_img = path.abspath(current_value)
 
-    
-    
+    img = process_image(topography_img)
+    create_model(img, show=show, topography_img=topography_img)
 
-def process_image() -> Image.Image:
+
+def process_image(topography_img=DEFAULT_IMG) -> Image.Image:
     # Reset modified image
     Image.open(topography_img).save(MODIFIED_TOPOGRAPHY_IMG)
 
-    # Convert to grayscale, where brighter values will show as peaks, and darker values will show as lows
+    # Convert to grayscale, where brighter values will show as peaks, and 
+    # darker values will show as lows
     img = Image.open(topography_img).convert('L')
-    
     # Downscale the image so the program doesn't crash all the time
     scale_factor = 1
     width, height = int(img.width * scale_factor), int(img.height * scale_factor)
     img = img.resize((width, height), Image.Resampling.LANCZOS)
 
-    # Blur image in order to smooth out spikes from adjacent pixels with drastically different values
+    # Blur image in order to smooth out spikes from adjacent pixels with 
+    # drastically different values
     blur_strength = 5
     img.filter(ImageFilter.GaussianBlur(radius=blur_strength))
 
     return img
 
 
-def create_model(img, show=False) -> None:
+def create_model(img, show=False, topography_img=DEFAULT_IMG) -> None:
     # Convert to numpy array (0-255)
     heightmap = np.array(img)
 
