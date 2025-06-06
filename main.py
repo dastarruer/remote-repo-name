@@ -11,7 +11,7 @@ MODIFIED_TOPOGRAPHY_IMG = path.join(BASE_DIR, "modified-image.png")
 DEFAULT_IMG = path.join(BASE_DIR, "images", "example-image.png")
 FINAL_MODEL_PATH = path.join(BASE_DIR, "model", "model.obj")
 
-FLAGS = ["show", "image="]
+FLAGS = ["show", "image=", "scale="]
 OPTIONS = "si:"
 
 def main():
@@ -21,17 +21,20 @@ def main():
     # Default path
     topography_img = DEFAULT_IMG
     show = False
+    scale_factor = 1
     for current_argument, current_value in arguments:
         if current_argument in ("-s", "--show"):
             show = True
         if current_argument in ("-i", "--image") and path.exists(current_value):
             topography_img = path.abspath(current_value)
+        if current_argument in ("--scale"):
+            scale_factor = float(current_value)
 
-    img = process_image(topography_img)
+    img = process_image(topography_img, scale_factor=scale_factor)
     create_model(img, show=show, topography_img=topography_img)
 
 
-def process_image(topography_img=DEFAULT_IMG) -> Image.Image:
+def process_image(topography_img=DEFAULT_IMG, scale_factor=1.0) -> Image.Image:
     # Reset modified image
     Image.open(topography_img).save(MODIFIED_TOPOGRAPHY_IMG)
 
@@ -39,7 +42,6 @@ def process_image(topography_img=DEFAULT_IMG) -> Image.Image:
     # darker values will show as lows
     img = Image.open(topography_img).convert('L')
     # Downscale the image so the program doesn't crash all the time
-    scale_factor = 1
     width, height = int(img.width * scale_factor), int(img.height * scale_factor)
     img = img.resize((width, height), Image.Resampling.LANCZOS)
 
@@ -79,11 +81,11 @@ def create_model(img, show=False, topography_img=DEFAULT_IMG) -> None:
     plotter = pv.Plotter()
     plotter.add_mesh(grid, cmap="terrain", lighting=True, label="The Gaza strip", render_points_as_spheres=True, texture=texture, render_lines_as_tubes=True)
 
-    if show == True:
-        plotter.show()
-
     # Export the model
     plotter.export_obj(FINAL_MODEL_PATH)
+
+    if show == True:
+        plotter.show()
 
         
 
