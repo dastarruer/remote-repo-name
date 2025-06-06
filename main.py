@@ -14,13 +14,20 @@ FLAGS = ["show"]
 OPTIONS = "s"
 
 def main():
+    argument_list = sys.argv[1:]
+    arguments, values = getopt.getopt(argument_list, OPTIONS, FLAGS)
+
+    show = False
+    for currentArgument, currentValue in arguments:
+        if currentArgument in ("-s", "--show"):
+            show = True
+            
     img = process_image()
-    plotter = create_model(img)
+    plotter = create_model(img, show=show)
 
     # Export the model
     plotter.export_obj(FINAL_MODEL_PATH)
     
-    process_cli_args(plotter)
 
 
 def process_image() -> Image.Image:
@@ -42,7 +49,7 @@ def process_image() -> Image.Image:
     return img
 
 
-def create_model(img) -> pv.Plotter:
+def create_model(img, show=False) -> pv.Plotter:
     # Convert to numpy array (0-255)
     heightmap = np.array(img)
 
@@ -68,16 +75,11 @@ def create_model(img) -> pv.Plotter:
 
     plotter = pv.Plotter()
     plotter.add_mesh(grid, cmap="terrain", lighting=True, label="The Gaza strip", render_points_as_spheres=True, texture=texture, render_lines_as_tubes=True)
-    return plotter
-    
-    
-def process_cli_args(plotter):
-    argument_list = sys.argv[1:]
-    arguments, values = getopt.getopt(argument_list, OPTIONS, FLAGS)
 
-    for currentArgument, currentValue in arguments:
-        if currentArgument in ("-s", "--show"):
-            plotter.show()
+    if show == True:
+        plotter.show()
+    return plotter
+
         
 
 if __name__ == "__main__":
